@@ -67,10 +67,10 @@ class CustomConfig(Config):
     IMAGES_PER_GPU = 2
 
     # Number of classes (including background)
-    NUM_CLASSES = 1 + 2  # Background + number of classes (Here, 2)
+    NUM_CLASSES = 1 + 3  # Background + number of classes (Here, 3)
 
     # Number of training steps per epoch
-    STEPS_PER_EPOCH = 100
+    STEPS_PER_EPOCH = 50
 
     # Skip detections with < 90% confidence
     DETECTION_MIN_CONFIDENCE = 0.9
@@ -87,71 +87,63 @@ class CustomDataset(utils.Dataset):
         dataset_dir: Root directory of the dataset.
         subset: Subset to load: train or val
         """
-        # Add classes according to the numbe of classes required to detect
-        self.add_class("custom", 1, "object1")
-        self.add_class("custom",2,"object2")
+        # Add classes according to the number of classes required to detect
+        self.add_class("custom", 1, "metal_bowl")
+        self.add_class("custom", 2, "metal_plate")
+        self.add_class("custom", 3, "metal_snack_plate")
 
         # Train or validation dataset?
         assert subset in ["train", "val"]
         dataset_dir = os.path.join(dataset_dir, subset)
 
         # Load annotations
-        # VGG Image Annotator (up to version 1.6) saves each image in the form:
-        # { 'filename': '28503151_5b5b7ec140_b.jpg',
-        #   'regions': {
-        #       '0': {
-        #           'region_attributes': {},
-        #           'shape_attributes': {
-        #               'all_points_x': [...],
-        #               'all_points_y': [...],
-        #               'name': 'polygon'}},
-        #       ... more regions ...
-        #   },
-        #   'size': 100202
-        # }
-        # We mostly care about the x and y coordinates of each region
-        # Note: In VIA 2.0, regions was changed from a dict to a list.
-        annotations = json.load(open(os.path.join(dataset_dir, "via_region_data.json")))
-        annotations = list(annotations.values())  # don't need the dict keys
-
-        # The VIA tool saves images in the JSON even if they don't have any
-        # annotations. Skip unannotated images.
-        annotations = [a for a in annotations if a['regions']]
+        annotations_file = os.path.join(dataset_dir, "annotations.json")
+        with open(annotations_file) as f:
+            coco_data = json.load(f)
+        
+        # Process COCO format annotations
+        images = {img['id']: img for img in coco_data['images']}
+        categories = {cat['id']: cat['name'] for cat in coco_data['categories']}
+        
+        # Group annotations by image
+        image_annotations = {}
+        for ann in coco_data['annotations']:
+            image_id = ann['image_id']
+            if image_id not in image_annotations:
+                image_annotations[image_id] = []
+            image_annotations[image_id].append(ann)
 
         # Add images
-        for a in annotations:
-            # Get the x, y coordinaets of points of the polygons that make up
-            # the outline of each object instance. These are stores in the
-            # shape_attributes (see json format above)
-            # The if condition is needed to support VIA versions 1.x and 2.x.
-            polygons = [r['shape_attributes'] for r in a['regions'].values()]
-            #labelling each class in the given image to a number
-
-            custom = [s['region_attributes'] for s in a['regions'].values()]
+        for image_id, image_info in images.items():
+            if image_id not in image_annotations:
+                continue  # Skip images without annotations
             
-            num_ids=[]
-            #Add the classes according to the requirement
-            for n in custom:
-                try:
-                    if n['label']=='object1':
-                        num_ids.append(1)
-                    elif n['label']=='object2':
-                        num_ids.append(2)
-                except:
-                    pass
+            annotations = image_annotations[image_id]
+            polygons = []
+            num_ids = []
+            
+            for ann in annotations:
+                # Convert segmentation to polygon format
+                segmentation = ann['segmentation'][0]  # Take first polygon
+                polygon = {
+                    'all_points_x': [segmentation[i] for i in range(0, len(segmentation), 2)],
+                    'all_points_y': [segmentation[i] for i in range(1, len(segmentation), 2)],
+                    'name': 'polygon'
+                }
+                polygons.append(polygon)
+                
+                # Map category_id to class number
+                category_id = ann['category_id']
+                num_ids.append(category_id)
 
-            # load_mask() needs the image size to convert polygons to masks.
-            # Unfortunately, VIA doesn't include it in JSON, so we must read
-            # the image. This is only managable since the dataset is tiny.
-            image_path = os.path.join(dataset_dir, a['filename'])
-            image = skimage.io.imread(image_path)
-            height, width = image.shape[:2]
-
+            image_path = os.path.join(dataset_dir, image_info['file_name'])
+            
             self.add_image(
                 "custom",
-                image_id=a['filename'],  # use file name as a unique image id
+                image_id=image_info['file_name'],
                 path=image_path,
-                width=width, height=height,
+                width=image_info['width'], 
+                height=image_info['height'],
                 polygons=polygons,
                 num_ids=num_ids)
 
@@ -212,7 +204,7 @@ def train(model):
     print("Training network heads")
     model.train(dataset_train, dataset_val,
                 learning_rate=config.LEARNING_RATE,
-                epochs=30,
+                epochs=20,
                 layers='heads')
 
 
