@@ -4,7 +4,7 @@ import skimage.io
 import matplotlib.pyplot as plt
 
 # Mask RCNN imports
-ROOT_DIR = r"C:\Users\HP\OneDrive\Documents\TEEP\test-scripts\mask rcnn\Custom_MaskRCNN" #Path to root directory
+ROOT_DIR = r"C:\Users\HP\OneDrive\Documents\TEEP\test-scripts\mask rcnn\Custom_MaskRCNN" #Path to root directory (Cloned git main folder)
 sys.path.append(ROOT_DIR)
 
 from mrcnn.config import Config
@@ -12,8 +12,8 @@ from mrcnn import model as modellib
 from mrcnn import visualize
 
 # Paths
-WEIGHTS_PATH = os.path.join(ROOT_DIR, "logs", "custom", "mask_rcnn_custom_0001.h5")
-IMAGE_PATH = os.path.join(ROOT_DIR, "images", "bs.png")
+WEIGHTS_PATH = os.path.join(ROOT_DIR, "logs", "custom", "mask_rcnn_custom_0001.h5") #change custom to folder name and mask_rcnn_custom_0001.h5 to actual weighted model with best accuracy
+IMAGE_PATH = os.path.join(ROOT_DIR, "images", "bs.png") #image to reference inside images in root directory
 
 # Verify paths
 if not os.path.exists(WEIGHTS_PATH):
@@ -44,7 +44,7 @@ image = skimage.io.imread(IMAGE_PATH)
 results = model.detect([image], verbose=1)
 r = results[0]
 
-class_names = ['BG', 'metal_bowl', 'metal_plate', 'metal_snack_plate']
+class_names = ['BG', 'metal_bowl', 'metal_plate', 'metal_snack_plate'] #change these to actual classes used in custom.py (do not remove "BG")
 
 # Visualize results
 visualize.display_instances(
