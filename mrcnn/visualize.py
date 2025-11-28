@@ -13,6 +13,7 @@ import random
 import itertools
 import colorsys
 
+import cv2
 import numpy as np
 from skimage.measure import find_contours
 import matplotlib.pyplot as plt
@@ -498,3 +499,37 @@ def display_weight_stats(model):
                 "{:+9.4f}".format(w.std()),
             ])
     display_table(table)
+
+def display_instances_cv2(image, boxes, masks, ids, names, scores):
+    """
+    Draws Mask RCNN output using OpenCV (faster than matplotlib).
+    """
+    import random
+    n_instances = boxes.shape[0]
+
+    if not n_instances:
+        return image
+
+    colors = visualize.random_colors(n_instances)
+
+    for i in range(n_instances):
+        color = colors[i]
+        y1, x1, y2, x2 = boxes[i]
+
+        # Draw box
+        cv2.rectangle(image, (x1, y1), (x2, y2),
+                      (int(color[0]*255), int(color[1]*255), int(color[2]*255)), 2)
+
+        # Label
+        class_id = ids[i]
+        score = scores[i] if scores is not None else None
+        label = f"{names[class_id]}: {score:.2f}"
+        cv2.putText(image, label, (x1, y1 - 5),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5,
+                    (0, 255, 0), 2)
+
+        # Mask
+        mask = masks[:, :, i]
+        image = apply_mask(image, mask, color, alpha=0.4)
+
+    return image

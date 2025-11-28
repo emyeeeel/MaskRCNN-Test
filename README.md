@@ -23,7 +23,7 @@ Ensure you have the required dependencies installed. Run the following commands 
 
 ```bash
 pip install "tensorflow==1.15" "keras==2.3.1" "h5py==2.10.0" "protobuf==3.20.*" "numpy==1.19.5"
-pip install "cython" "scikit-image" "matplotlib" "imgaug" "opencv-python"
+pip install "cython" "scikit-image" "matplotlib" "imgaug" "opencv-python" "IPython"
 ```
 
 ### 1.4 Verify Installations
@@ -83,12 +83,6 @@ EPOCHS = 50
 ## 3. Training the Model
 Once you have prepared your dataset and adjusted the configurations, you can begin training your model.
 
-**Note:** If you want to use only CPU instead of GPU, add this to to resolve GPU warnings in `custom.py` and `test.py`.
-```bash
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"   
-```
-
 ### 3.1 Run Training
 To train the Mask R-CNN model, navigate to the directory where `custom.py` is located and run the following command:
 
@@ -116,11 +110,17 @@ Open the `test.py` file located in `samples/custom/` and modify the following co
 ### 4.3 Run Inference
 Once you've made the necessary modifications, run the inference script:
 
+For single image input:
 ```bash
 python test.py
 ```
 
-This will generate the output image with predictions (**bounding boxes**, **masks**, and **class labels**). The resulting image, named **`test_image_masked.jpg`**, will be saved in the `images` folder.
+For live camera inferencing:
+```bash
+python live.py
+```
+
+This will generate the output image with predictions (**bounding boxes**, **masks**, and **class labels**). 
 
 
 ## Acknowledgements & Citations

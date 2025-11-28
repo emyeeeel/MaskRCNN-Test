@@ -20,7 +20,7 @@ import tensorflow as tf
 import keras
 import keras.backend as K
 import keras.layers as KL
-import keras.engine as KE
+import keras.layers as KE
 import keras.models as KM
 
 from mrcnn import utils
@@ -2358,7 +2358,7 @@ class MaskRCNN():
         # Work-around for Windows: Keras fails on Windows when using
         # multiprocessing workers. See discussion here:
         # https://github.com/matterport/Mask_RCNN/issues/13#issuecomment-353124009
-        if os.name is 'nt':
+        if os.name == 'nt':
             workers = 0
         else:
             workers = multiprocessing.cpu_count()
