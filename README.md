@@ -22,8 +22,7 @@ conda activate env_name
 Ensure you have the required dependencies installed. Run the following commands to install the correct versions of TensorFlow, Keras, and other necessary packages:
 
 ```bash
-pip install "tensorflow==1.15" "keras==2.3.1" "h5py==2.10.0" "protobuf==3.20.*" "numpy==1.19.5"
-pip install "cython" "scikit-image" "matplotlib" "imgaug" "opencv-python" "IPython"
+pip install "tensorflow==1.15" "keras==2.3.1" "h5py==2.10.0" "protobuf==3.20.*" "numpy==1.19.5" "cython" "scikit-image" "matplotlib" "imgaug" "opencv-python" "IPython"
 ```
 
 ### 1.4 Verify Installations

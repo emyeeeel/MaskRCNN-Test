@@ -510,7 +510,7 @@ def display_instances_cv2(image, boxes, masks, ids, names, scores):
     if not n_instances:
         return image
 
-    colors = visualize.random_colors(n_instances)
+    colors = random_colors(n_instances)
 
     for i in range(n_instances):
         color = colors[i]
