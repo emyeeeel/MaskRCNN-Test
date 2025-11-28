@@ -11,7 +11,7 @@ To begin, clone the repository to your local machine:
 git clone https://github.com/emyeeeel/MaskRCNN-Test
 ```
 
-### 1.3 Create conda environment (If you don't have conda, use python environment)
+### 1.2 Create conda environment (If you don't have conda, use python environment)
 Rename env_name to convenient environment name for this test.
 ```bash
 conda create -n env_name python=3.7
@@ -37,6 +37,7 @@ The output should be:
 ```bash
 1.15.0 2.3.1
 ```
+
 
 ## 2. Prepare Your Dataset
 
@@ -81,6 +82,12 @@ EPOCHS = 50
 
 ## 3. Training the Model
 Once you have prepared your dataset and adjusted the configurations, you can begin training your model.
+
+**Note:** If you want to use only CPU instead of GPU, add this to to resolve GPU warnings in `custom.py` and `test.py`.
+```bash
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"  
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"   
+```
 
 ### 3.1 Run Training
 To train the Mask R-CNN model, navigate to the directory where `custom.py` is located and run the following command:
