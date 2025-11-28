@@ -11,7 +11,14 @@ To begin, clone the repository to your local machine:
 git clone https://github.com/emyeeeel/MaskRCNN-Test
 ```
 
-### 1.2 Install Dependencies
+### 1.3 Create conda environment (If you don't have conda, use python environment)
+Rename env_name to convenient environment name for this test.
+```bash
+conda create -n env_name python=3.7
+conda activate env_name
+```
+
+### 1.3 Install Dependencies
 Ensure you have the required dependencies installed. Run the following commands to install the correct versions of TensorFlow, Keras, and other necessary packages:
 
 ```bash
@@ -19,7 +26,7 @@ pip install "tensorflow==1.15" "keras==2.3.1" "h5py==2.10.0" "protobuf==3.20.*" 
 pip install "cython" "scikit-image" "matplotlib" "imgaug" "opencv-python"
 ```
 
-### 1.3 Verify Installations
+### 1.4 Verify Installations
 To confirm that TensorFlow and Keras are installed correctly, run the following command:
 
 ```bash
