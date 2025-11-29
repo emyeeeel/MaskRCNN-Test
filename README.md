@@ -22,7 +22,7 @@ conda activate env_name
 Ensure you have the required dependencies installed. Run the following commands to install the correct versions of TensorFlow, Keras, and other necessary packages:
 
 ```bash
-pip install "tensorflow==1.15" "keras==2.3.1" "h5py==2.10.0" "protobuf==3.20.*" "numpy==1.19.5" "cython" "scikit-image" "matplotlib" "imgaug" "opencv-python" "IPython"
+pip install "tensorflow==1.15" "keras==2.3.1" "h5py==2.10.0" "protobuf==3.20.*" "numpy==1.19.5" "cython" "scikit-image" "matplotlib" "imgaug" "opencv-python" "IPython" "pyrealsense2"
 ```
 
 ### 1.4 Verify Installations
@@ -114,9 +114,14 @@ For single image input:
 python test.py
 ```
 
-For live camera inferencing:
+For live camera (Intel Realsense) inferencing:
 ```bash
 python live.py
+```
+
+For live capture (Intel Realsense) inferencing:
+```bash
+python capture.py
 ```
 
 This will generate the output image with predictions (**bounding boxes**, **masks**, and **class labels**). 

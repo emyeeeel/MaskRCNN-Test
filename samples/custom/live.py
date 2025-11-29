@@ -10,7 +10,7 @@ import pyrealsense2 as rs
 import matplotlib.pyplot as plt
 
 # Mask RCNN imports
-ROOT_DIR = r"C:\Users\USER\Documents\Amiel's files\Segmentation Test\MaskRCNN-Test"
+ROOT_DIR = r"C:\Users\HP\OneDrive\Documents\TEEP\MaskRCNN\Plate Segmentation\MaskRCNN-Test" # change this to root file directory
 sys.path.append(ROOT_DIR)
 
 from mrcnn.config import Config
@@ -18,7 +18,7 @@ from mrcnn import model as modellib
 from mrcnn import visualize
 
 # Paths
-WEIGHTS_PATH = os.path.join(ROOT_DIR, "logs", "custom20251126T1742", "mask_rcnn_custom_004.h5")
+WEIGHTS_PATH = os.path.join(ROOT_DIR, "logs", "custom", "mask_rcnn_custom_0004.h5") #change the weight folder and weight path
 
 if not os.path.exists(WEIGHTS_PATH):
     raise FileNotFoundError(f"Weights file not found: {WEIGHTS_PATH}")
@@ -47,7 +47,7 @@ class_names = ['BG', 'metal_bowl', 'metal_plate', 'metal_snack_plate']
 pipeline = rs.pipeline()
 config_rs = rs.config()
 
-config_rs.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
+config_rs.enable_stream(rs.stream.color, 848, 480, rs.format.bgr8, 30)
 
 print("Starting RealSense camera...")
 pipeline.start(config_rs)
